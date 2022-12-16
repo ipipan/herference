@@ -1,0 +1,7 @@
+model_config:
+  max_span_length: 30
+  top_lambda: 0.5
+  ffnn_size: 3072
+  normalise_loss: True
+  dropout_prob: 0.5
+  seed: 98765432
