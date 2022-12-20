@@ -10,7 +10,7 @@ class ModelTests(unittest.TestCase):
 
     def test_prediction(self):
         manager = Herference()
-        rt = manager.predict("Ala ma kota, jest on bardzo ładny.")
+        rt = manager.predict(r"Ala ma mruczącego kota, jest on bardzo ładny.")
         print(rt)
         self.assertTrue(isinstance(rt, api.Text))
 

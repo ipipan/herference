@@ -9,20 +9,25 @@ class Mention:
     """
     Mention object - a reference to a text span
     :param text: string with text of the mention
-    :param indices: indices of mention range in Text.tokenized
+    :param indices: tuple of start and end indices of the mention
+    :param tokenized_indices: indices of mention range in Text.tokenized
     :param span: Spacy span of a mention if it was found
     :param logit: Logit value of significance - used in case of singleton mentions
     """
     text: str
     indices: Tuple[int, int]
+    subtoken_indices: Tuple[int, int] = None
     span: Span = None
     logit: float = None
 
     def __repr__(self):
         if self.span:
-            return f"{self.span}"
+            return f'{self.span}'
         else:
-            return f"{self.text} <{self.indices[0]}, {self.indices[1]}>"
+            return f'{self.text} <{self.indices[0]}, {self.indices[1]}>'
+
+    def __post_init__(self):
+        self.subtoken_indices = self.indices
 
 
 @dataclass
@@ -48,7 +53,8 @@ class Cluster:
 class Text:
     """
 
-    :param text: string with text :param clusters: list of clusters detected in text
+    :param text: string with text
+    :param clusters: list of clusters detected in text
     :param singletons: list of
     mentions detected in text. It is sorted list with .logit value of possible significant non-coreferent mentions
     :param tokenized: list of tokens of text

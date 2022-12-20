@@ -13,6 +13,7 @@ from transformers import (
 )
 
 from herference import api
+from herference.align import align
 from herference.batch import CorefLoader
 from herference.config import get_config
 from herference.dataset import CorefDataset, Text, Corpus
@@ -106,4 +107,6 @@ class Herference:
             singletons=pred.singletons,
             tokenized=pred.tokenized_text
         )
-        return api_text
+        aligned_text = align(api_text, data_point)
+
+        return aligned_text
