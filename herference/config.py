@@ -1,6 +1,7 @@
 from pathlib import Path
 from dataclasses import dataclass, field
 import yaml
+import pkg_resources
 
 from transformers import (
     RobertaConfig,
@@ -8,8 +9,18 @@ from transformers import (
 from torch._C import device
 
 
-def get_config():
-    with open(Path(__file__).parent / 'package_config.yaml', 'r') as f:
+def get_config(config_path: Path = None) -> 'Config':
+    if config_path is None:
+        config_path = pkg_resources.resource_filename(
+            'herference',
+            'config.yaml'
+        )
+    elif config_path.exists():
+        pass
+    else:
+        raise FileNotFoundError(f'Config file {config_path} not found')
+
+    with open(config_path, 'r') as f:
         cfg = yaml.safe_load(f)
     return Config(**cfg)
 
