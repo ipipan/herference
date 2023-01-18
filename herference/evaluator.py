@@ -1,4 +1,5 @@
-#  Copyright (c) 2021  Institute of Computer Science, Polish Academy of Sciences (IPI PAN) <http://zil.ipipan.waw.pl>
+# Copyright (c) 2022-2023 CLARIN-PL Wroclaw University of Technology and Science
+# All rights reserved.
 #
 #  This file is free software: you may copy, redistribute and/or modify it
 #  under the terms of the GNU General Public License as published by the
