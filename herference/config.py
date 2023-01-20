@@ -13,7 +13,7 @@ def get_config(config_path: Path = None) -> 'Config':
     if config_path is None:
         config_path = pkg_resources.resource_filename(
             'herference',
-            'config.yaml'
+            'package_config.yaml'
         )
     elif config_path.exists():
         pass
