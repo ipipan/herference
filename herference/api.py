@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple, List
 
+import torch
 from spacy.tokens import Span
 
 
@@ -19,6 +20,7 @@ class Mention:
     subtoken_indices: Tuple[int, int] = None
     span: Span = None
     logit: float = None
+    vector: torch.Tensor = None
 
     def __repr__(self):
         if self.span:
@@ -77,3 +79,9 @@ class Text:
 
     def __iter__(self):
         return iter(self.clusters)
+
+    @property
+    def mentions(self):
+        for cluster in self:
+            for mention in cluster:
+                yield mention

@@ -1,19 +1,6 @@
 #  Copyright (c) 2022-2023 CLARIN-PL, Wroclaw University of Science and Technology
 #  All rights reserved.
 #
-#  This file is free software: you may copy, redistribute and/or modify it
-#  under the terms of the GNU General Public License as published by the
-#  Free Software Foundation, either version 3 of the License, or (at your
-#  option) any later version.
-#
-#  This file is distributed in the hope that it will be useful, but
-#  WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-#  General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program. If not, see <https://www.gnu.org/licenses/>.
-#
 #  This file incorporates work covered by the following copyright and
 #  permission notice:
 #    Copyright (c) 2021 (https://github.com/yuvalkirstain/s2e-coref/blob/main/modeling.py)
@@ -323,9 +310,17 @@ class S2E(BertPreTrainedModel):
         # [batch_size, max_k, max_k + 1]
 
         if return_all_outputs:
-            outputs = (mention_start_ids, mention_end_ids, final_logits, mention_logits)
+            outputs = {
+                "mention_reps": torch.cat((start_mention_reps, end_mention_reps), dim=-1),
+                "coref_reps": torch.cat((start_coref_reps, end_coref_reps), dim=-1),
+                "mention_start_ids": mention_start_ids,
+                "mention_end_ids": mention_end_ids,
+                "mention_logits": mention_logits,
+                "coref_logits": coref_logits,
+                "final_logits": final_logits,
+            }
         else:
-            outputs = tuple()
+            outputs = dict()
 
         if gold_clusters is not None:
             losses = {}
@@ -333,6 +328,11 @@ class S2E(BertPreTrainedModel):
                                                                           gold_clusters)
             loss = self._get_marginal_log_likelihood_loss(final_logits, labels_after_pruning, span_mask)
             losses.update({"loss": loss})
-            outputs = (loss,) + outputs + (losses,)
+
+            outputs.update({
+                "loss": loss,
+                "losses": losses,
+            })
 
         return outputs
+

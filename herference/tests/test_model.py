@@ -13,6 +13,7 @@ class ModelTests(unittest.TestCase):
         rt = manager.predict(r"Ala ma mruczącego kota, jest on bardzo ładny.")
         print(rt)
         self.assertTrue(isinstance(rt, api.Text))
+        self.assertIsNotNone(rt.clusters[0].mentions[0].vector)
 
 
 if __name__ == '__main__':
