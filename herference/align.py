@@ -20,7 +20,8 @@ def intersect(span, text: str):
 
 
 def align_mention(doc: Doc | List[str], mention: api.Mention, subtoken2token_indices) -> api.Mention:
-    start, end = mention.indices
+    start, end = mention.subtoken_indices if isinstance(doc, Doc) else mention.indices
+
     if subtoken2token_indices[start] and subtoken2token_indices[end]:
         start, end = (
             subtoken2token_indices[start][0],
