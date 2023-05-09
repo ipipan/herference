@@ -63,8 +63,8 @@ class Evaluator:
         for k, v in outputs.items():
             outputs[k] = v.detach().cpu().numpy()
         for token_ids, starts, end_offsets, coref_logits, mention_reps, mention_logits in \
-                zip(token_ids, outputs['mention_start_ids'], outputs['mention_end_ids'], outputs['coref_logits'],
-                    outputs['mention_logits'], outputs['mention_reps']):
+                zip(token_ids, outputs['mention_start_ids'], outputs['mention_end_ids'], outputs['final_logits'],
+                    outputs['coref_reps'], outputs['mention_logits']):
 
             mention_to_reps = {
                 (s, e):  rep for s, e, rep in zip(starts, end_offsets, mention_reps)
