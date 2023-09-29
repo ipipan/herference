@@ -106,7 +106,6 @@ class Herference:
 
         api_text = api.Text(
             text=text,
-            mentions=pred.mentions,
             clusters=pred.clusters,
             singletons=pred.singletons,
             tokenized=pred.tokenized_text
