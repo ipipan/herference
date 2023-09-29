@@ -5,3 +5,5 @@ model_config:
   normalise_loss: True
   dropout_prob: 0.5
   seed: 98765432
+spacy:
+  model_name: pl_core_news_lg

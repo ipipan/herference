@@ -7,6 +7,7 @@ import random
 
 import numpy as np
 import torch
+import spacy
 from transformers import (
     AutoConfig,
     AutoTokenizer,
@@ -19,6 +20,7 @@ from herference.config import get_config
 from herference.dataset import CorefDataset, Text, Corpus
 from herference.evaluator import Evaluator
 from herference.model import S2E
+from herference.heads import add_heads
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +64,7 @@ class Herference:
 
         self.tokenizer = tokenizer
         self.model = model
+        self.nlp = spacy.load(self.cfg.spacy.model_name)
 
     def predict(self, data_point: Union[str, list]):
         if isinstance(data_point, str):
@@ -103,10 +106,12 @@ class Herference:
 
         api_text = api.Text(
             text=text,
+            mentions=pred.mentions,
             clusters=pred.clusters,
             singletons=pred.singletons,
             tokenized=pred.tokenized_text
         )
         aligned_text = align(api_text, data_point)
+        add_heads(aligned_text, self.nlp)
 
         return aligned_text

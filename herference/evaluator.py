@@ -33,7 +33,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from herference.api import Cluster
+from herference.api import Cluster, Mention
 from herference.utils import (
     extract_clusters,
     extract_mentions_to_predicted_clusters_from_clusters,
@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Prediction:
-    mentions: List[str]
+    mentions: List[Mention]
     clusters: List[Cluster]
     singletons: List[Tuple[int, int]]
     tokenized_text: List[str]
@@ -96,7 +96,8 @@ class Evaluator:
 
             mentions = detokenize(tokenizer, output[0], predicted_mentions)
             clusters = [
-                api.Cluster(detokenize(tokenizer, output[0], cluster)) for cluster in predicted_clusters]
+                api.Cluster(detokenize(tokenizer, output[0], cluster)) for cluster in predicted_clusters
+                ]
             singletons = [(detokenize(tokenizer, output[0], cluster[1]), cluster[2]) for cluster in singletons]
             for singleton in singletons:
                 singleton[0][0].logit = singleton[1]

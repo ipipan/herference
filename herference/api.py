@@ -14,11 +14,12 @@ class Mention:
     :param span: Spacy span of a mention if it was found
     :param logit: Logit value of significance - used in case of singleton mentions
     """
-    text: str
+    text: List[str]
     indices: Tuple[int, int]
     subtoken_indices: Tuple[int, int] = None
     span: Span = None
     logit: float = None
+    head: int = None
 
     def __repr__(self):
         if self.span:
@@ -63,6 +64,12 @@ class Text:
     clusters: List[Cluster]
     singletons: List[Mention] = None
     tokenized: List[str] = None
+
+    @property
+    def mentions(self):
+        for cluster in self.clusters:
+            for mention in cluster:
+                yield mention
 
     def __repr__(self):
         return ''.join(

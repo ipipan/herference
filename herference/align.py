@@ -32,7 +32,7 @@ def align_mention(doc: Doc | List[str], mention: api.Mention, subtoken2token_ind
             mention.span = span
         elif isinstance(doc, list):
             mention.indices = (start, end)
-            mention.text = ' '.join(span)
+            mention.text = span
         else:
             logger.debug(f"{span}, {mention.text}")
     return mention
