@@ -54,6 +54,7 @@ class ModelConfig:
 @dataclass
 class Config:
     model_config: ModelConfig = field(default_factory=ModelConfig)
+    SPACY_MODEL_NAME = 'pl_core_news_lg'
     LOG_LEVEL = 'INFO'
     MODEL_CONFIG_CLASS = RobertaConfig
     MODEL_NAME = 'ipipan/herbert-large-coref'

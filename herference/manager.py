@@ -64,7 +64,7 @@ class Herference:
 
         self.tokenizer = tokenizer
         self.model = model
-        self.nlp = spacy.load(self.cfg.spacy.model_name)
+        self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
 
     def predict(self, data_point: Union[str, list]):
         if isinstance(data_point, str):
