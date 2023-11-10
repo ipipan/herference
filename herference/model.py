@@ -44,8 +44,8 @@ from torch.nn import Module, Linear, LayerNorm, Dropout
 from transformers import BertPreTrainedModel, AutoModel
 from transformers.activations import ACT2FN
 
-from herference.utils import extract_clusters, extract_mentions_to_predicted_clusters_from_clusters, mask_tensor, \
-    split_tokenized
+from herference.utils import extract_clusters, extract_mentions_to_predicted_clusters_from_clusters, mask_tensor, pad_tensor, \
+    split_tokenized, unpad_batch
 
 logger = logging.getLogger(__name__)
 
@@ -271,7 +271,9 @@ class S2E(BertPreTrainedModel):
             batch_outputs = []
 
             for batch_element in range(input_ids.shape[0]):
-                sequence_outputs = []
+                subbatch_inputs = [] # sub-batch created from one input longer than max_model_input_length
+                subbatch_attention_mask = []
+                pad_lens = []
                 input_ids_list, spans_indices = split_tokenized(input_ids[batch_element])
                 for inputs, span in zip(input_ids_list, spans_indices):
                     start_ind, end_ind = span
@@ -279,13 +281,15 @@ class S2E(BertPreTrainedModel):
                                          batch_element,
                                          start_ind:end_ind + 1
                                          ]
-                    sequence_outputs.append(
-                        self.bert(
-                            inputs.unsqueeze(0),
-                            attention_mask=attention_mask_one.unsqueeze(0)
-                        ).last_hidden_state
-                    )
-                sequence_output = torch.cat(sequence_outputs, dim=1)
+                    padded_inputs, padded_attention_mask_one, pad_len = pad_tensor(inputs, attention_mask_one)
+                    subbatch_attention_mask.append(padded_attention_mask_one)
+                    subbatch_inputs.append(padded_inputs)
+                    pad_lens.append(pad_len)
+                subbatch_outputs = self.bert(
+                        torch.stack(subbatch_inputs),
+                        attention_mask=torch.stack(subbatch_attention_mask),
+                    ).last_hidden_state
+                sequence_output = unpad_batch(subbatch_outputs, pad_lens)
                 batch_outputs.append(
                     sequence_output
                 )

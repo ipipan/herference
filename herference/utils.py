@@ -118,6 +118,22 @@ def split_tokenized(t, max_length=510):
     list_of_sizes = [get_span_len(start, end) for start, end in spans]
     return torch.split(t, list_of_sizes), spans
 
+def pad_tensor(t, mask, max_length=512):
+    if mask.shape[0] != t.shape[0]:
+        raise ValueError("Mask and tensor have different lengths.")
+    if t.shape[0] > max_length:
+        raise ValueError(f"Input tensor is longer than {max_length} tokens.")
+    
+    pad_len = max_length - t.shape[0]
+    t = torch.cat([t, torch.zeros(pad_len, dtype=torch.long, device=t.device)])
+    mask = torch.cat([mask, torch.zeros(pad_len, dtype=torch.long, device=mask.device)])
+    return t, mask, pad_len
+
+def unpad_batch(batch, pad_lens):
+    unpadded_batch = []
+    for seq, pad_len in zip(batch, pad_lens):
+        unpadded_batch.append(seq[:-pad_len])
+    return torch.cat(unpadded_batch).unsqueeze(0)
 
 def extract_clusters_for_decode(mention_to_antecedent):
     mention_to_antecedent = sorted(mention_to_antecedent)
