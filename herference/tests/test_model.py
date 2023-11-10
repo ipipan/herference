@@ -16,7 +16,7 @@ class ModelTests(unittest.TestCase):
 
     def test_long_prediction(self):
         manager = Herference()
-        rt = manager.predict(r"Ala ma mruczącego kota, jest on bardzo ładny." * 1_000)
+        rt = manager.predict(r"Ala ma mruczącego kota, jest on bardzo ładny. " * 1_000)
         print(rt)
         self.assertTrue(isinstance(rt, api.Text))
 
