@@ -37,5 +37,5 @@ for cluster in text.clusters:
       
 print(text.tokenized)
 ```
-
+----------------------------------------------
 Copyright (c) 2022-2023 CLARIN-PL Wroclaw University of Technology and Science, Institute of Computer Science, Polish Academy of Sciences
