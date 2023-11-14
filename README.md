@@ -1,5 +1,7 @@
 # herference
 
+Coreference Resolution for Polish language
+
 ## API Docs
 
 
