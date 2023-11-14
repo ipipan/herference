@@ -47,7 +47,7 @@ class Herference:
 
         transformers_cfg = AutoConfig.from_pretrained(
             self.cfg.MODEL_NAME
-        )
+        ) if not model else None
 
         tokenizer = AutoTokenizer.from_pretrained(
             self.cfg.MODEL_NAME

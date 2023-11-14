@@ -3,6 +3,26 @@
 Coreference Resolution for Polish language
 
 
+# Use in Spacy
+```
+import spacy
+import herference
+model = "pl_core_news_lg"
+nlp = spacy.load(model)
+nlp.add_pipe("herference")
+doc = nlp(text)
+print('doc preds: ', doc._.coref)
+```
+
+
+## Specify model and device
+```
+coref_model = "ipipan/herference-base"
+nlp.add_pipe("herference", config={"model_name_or_path": coref_model, "device": "cpu"})
+
+```
+
+
 
 ## API Docs
 
