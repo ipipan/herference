@@ -29,6 +29,16 @@ class SpacyTests(unittest.TestCase):
         print('doc preds: ', doc._.coref)
         self.assertIsNotNone(doc._.coref.clusters[0].mentions[0].span)
 
+    def test_alignment(self):
+        nlp = init_spacy("pl_core_news_sm")
+        from herference.tests.texts import texts
+        for text in texts:
+            doc = nlp(text)
+            for c in doc._.coref:
+                for m in c:
+                    print(m, m.span is not None)
+                    self.assertIsNotNone(m.span)
+
 
 if __name__ == "__main__":
     unittest.main()
