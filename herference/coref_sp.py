@@ -11,21 +11,20 @@ Doc.set_extension("coref", default=None)
 @Language.factory(
     "herference",
     default_config={
-        "model": None,
-        "mode": "lookup",
-        "overwrite": False,
-        "scorer": {"@scorers": "spacy.lemmatizer_scorer.v1"}
+        "model_name_or_path": None,
+        "device": None,
+        "cfg": None,
     }
 )
-def make_herference(nlp, model, name, mode, overwrite, scorer):
-    return SpacyCoref(nlp, name)
+def make_herference(nlp, name, model_name_or_path, device, cfg):
+    return SpacyCoref(nlp, name, model_name_or_path, device, cfg)
 
 
 class SpacyCoref(Pipe):
-    def __init__(self, nlp, name):
+    def __init__(self, nlp, name, model_name_or_path, device, cfg):
         self.nlp = nlp
         self.name = name
-        self.cr = Herference()
+        self.cr = Herference(_cfg=cfg, device=device, model=model_name_or_path)
 
     def __call__(self, doc):
         self.annotate(doc)
