@@ -55,9 +55,9 @@ class ModelConfig:
 class Config:
     model_config: ModelConfig = field(default_factory=ModelConfig)
     SPACY_MODEL_NAME = 'pl_core_news_lg'
-    LOG_LEVEL = 'INFO'
+    LOG_LEVEL = 'ERROR'
     MODEL_CONFIG_CLASS = RobertaConfig
-    MODEL_NAME = 'ipipan/herbert-large-coref'
+    MODEL_NAME = 'ipipan/herference-large'
     DEVICE: device = device('cpu')
 
     def __post_init__(self):

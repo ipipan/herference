@@ -47,7 +47,7 @@ class Herference:
 
         transformers_cfg = AutoConfig.from_pretrained(
             self.cfg.MODEL_NAME
-        )
+        ) if not model else None
 
         tokenizer = AutoTokenizer.from_pretrained(
             self.cfg.MODEL_NAME
@@ -94,9 +94,11 @@ class Herference:
 
         batch = tuple(tensor.to(self.model.device) for tensor in loader[0][1])
         input_ids, attention_mask, gold_clusters = batch
-        outputs = self.model(input_ids=input_ids,
-                             attention_mask=attention_mask,
-                             return_all_outputs=True)
+        self.model.eval()
+        with torch.no_grad():
+            outputs = self.model(input_ids=input_ids,
+                                attention_mask=attention_mask,
+                                return_all_outputs=True)
 
         pred = Evaluator.get_prediction(
             batch,
