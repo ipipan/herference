@@ -42,7 +42,7 @@ class ModelConfig:
 
     def to_transformers_config(self):
         return RobertaConfig(
-            max_position_embeddings=self.max_span_length,
+            max_position_embeddings=self.max_model_input_length,
             hidden_dropout_prob=self.dropout_prob,
             attention_probs_dropout_prob=self.dropout_prob,
             seed=self.seed,

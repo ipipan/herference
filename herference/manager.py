@@ -113,6 +113,6 @@ class Herference:
             tokenized=pred.tokenized_text
         )
         aligned_text = align(api_text, data_point)
-        add_heads(aligned_text, self.nlp)
+        add_heads(aligned_text, self.nlp) # @TODO: turn off for Spacy-based inference
 
         return aligned_text
