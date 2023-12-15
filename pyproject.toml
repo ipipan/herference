@@ -22,4 +22,4 @@ requires = ["poetry-core>=1.0.0", "setuptools>=42", "wheel"]   # PEP 508 specifi
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.build]
-include = ["package_config.yaml"]
+build = "build"
