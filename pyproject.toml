@@ -20,3 +20,6 @@ spacy = "^3.7.2"
 [build-system]
 requires = ["setuptools>=42", "wheel"]   # PEP 508 specifications.
 build-backend = "setuptools.build_meta"
+
+[tool.poetry.build]
+include = ["package_config.yaml"]
