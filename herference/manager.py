@@ -68,7 +68,7 @@ class Herference:
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
         except IOError as e:
             logger.info(f'Could not load Spacy model {self.cfg.SPACY_MODEL_NAME}')
-            spacy.cli.download(model)
+            spacy.cli.download(self.cfg.SPACY_MODEL_NAME)
             spacy.load(self.cfg.SPACY_MODEL_NAME)
 
     def predict(self, data_point: Union[str, list]):
