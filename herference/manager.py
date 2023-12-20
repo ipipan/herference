@@ -71,7 +71,7 @@ class Herference:
             spacy.cli.download(self.cfg.SPACY_MODEL_NAME)
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
 
-    def predict(self, data_point: Union[str, list], mention_heads: bool = False):
+    def predict(self, data_point: Union[str, list], mention_heads: bool = True):
         if isinstance(data_point, str):
             data_point = re.sub('\n', ' ', data_point)
             data_point = data_point.split(' ')
