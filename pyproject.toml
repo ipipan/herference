@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "herference"
-version = "0.1.0"
+version = "0.2.0"
 description = "Coreference Resolution inference"
 authors = ["Karol Saputa <karol.saputa@gmail.com>"]
 readme = "README.md"
