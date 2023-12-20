@@ -32,7 +32,7 @@ class SpacyCoref(Pipe):
 
     def annotate(self, doc):
         tokens = [str(tok) for tok in doc]
-        text = self.cr.predict(tokens)
+        text = self.cr.predict(tokens, mention_heads=False)
         aligned_text = align(text, doc)
         doc._.coref = aligned_text
         return doc

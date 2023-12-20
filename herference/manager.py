@@ -71,7 +71,7 @@ class Herference:
             spacy.cli.download(self.cfg.SPACY_MODEL_NAME)
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
 
-    def predict(self, data_point: Union[str, list]):
+    def predict(self, data_point: Union[str, list], mention_heads: bool = False):
         if isinstance(data_point, str):
             data_point = re.sub('\n', ' ', data_point)
             data_point = data_point.split(' ')
@@ -118,6 +118,7 @@ class Herference:
             tokenized=pred.tokenized_text
         )
         aligned_text = align(api_text, data_point)
-        add_heads(aligned_text, self.nlp) # @TODO: turn off for Spacy-based inference
+        if mention_heads:
+            add_heads(aligned_text, self.nlp) # @TODO: turn off for Spacy-based inference
 
         return aligned_text
