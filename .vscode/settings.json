@@ -2,7 +2,7 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./herference",
+        "./tests",
         "-p",
         "test_*.py"
     ],

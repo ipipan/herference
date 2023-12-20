@@ -31,7 +31,7 @@ class SpacyTests(unittest.TestCase):
 
     def test_alignment(self):
         nlp = init_spacy("pl_core_news_sm")
-        from herference.tests.texts import texts
+        from tests.texts import texts
         for text in texts:
             doc = nlp(text)
             for c in doc._.coref:
