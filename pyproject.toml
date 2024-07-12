@@ -8,7 +8,7 @@ packages = [{include = "herference"}]
 include = ["pyproject.toml", "README.md", "LICENSE", "package_config.yaml"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = ">=3.10,<3.13"
 torch = ">=2.0.0, !=2.0.1, !=2.1.0"
 transformers = "^4.35.0"
 spacy-alignments = "^0.9.1"
