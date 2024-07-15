@@ -26,6 +26,11 @@ class Mention:
             return f'{self.span}'
         else:
             return f'{self.text} <{self.indices[0]}, {self.indices[1]}>'
+        
+
+    def __iter__(self):
+        for el in self.indices:
+            yield el
 
     def __post_init__(self):
         self.subtoken_indices = self.indices
