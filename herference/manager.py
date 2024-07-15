@@ -21,6 +21,7 @@ from herference.dataset import CorefDataset, Text, Corpus
 from herference.evaluator import Evaluator
 from herference.model import S2E
 from herference.heads import add_heads
+from herference.filters import filtered_nested_mention_pairs_from_clusters
 
 logger = logging.getLogger(__name__)
 
@@ -121,4 +122,5 @@ class Herference:
         if mention_heads:
             add_heads(aligned_text, self.nlp) # @TODO: turn off for Spacy-based inference
 
+        aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
         return aligned_text
