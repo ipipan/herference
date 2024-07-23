@@ -12,13 +12,10 @@ class ModelForwardTests(unittest.TestCase):
         tokenizer = manager.tokenizer
         model = manager.model
         text = "Ala ma mruczącego kota, jest on bardzo ładny. " * 256
-        batch = [text] * 2
+        batch = [text] * 3
         tokenized = tokenizer(
             batch,
             add_special_tokens=True,
-            padding='max_length',
-            max_length=512,
-            truncation=False,
             return_attention_mask=True,
             return_tensors='pt'
             )
