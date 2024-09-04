@@ -122,5 +122,5 @@ class Herference:
         if mention_heads:
             add_heads(aligned_text, self.nlp) # @TODO: turn off for Spacy-based inference
 
-        aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
+        # aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
         return aligned_text
