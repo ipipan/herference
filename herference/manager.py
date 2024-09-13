@@ -1,6 +1,7 @@
 import logging
 import re
 from typing import Union
+from pathlib import Path
 
 import yaml
 import random
@@ -36,7 +37,8 @@ def set_seed(seed):
 class Herference:
     def __init__(self, _cfg=None, device=None, model=None):
         self.cfg = _cfg if _cfg is not None else get_config()
-        self.cfg.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') if not device else device
+        self.cfg.device = torch.device(
+            'cuda' if torch.cuda.is_available() else 'cpu') if not device else device
 
         self.transformers_logger = logging.getLogger("transformers")
         self.transformers_logger.setLevel(self.cfg.LOG_LEVEL)
@@ -68,7 +70,8 @@ class Herference:
         try:
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
         except IOError as e:
-            logger.info(f'Could not load Spacy model {self.cfg.SPACY_MODEL_NAME}')
+            logger.info(f'Could not load Spacy model {
+                        self.cfg.SPACY_MODEL_NAME}')
             spacy.cli.download(self.cfg.SPACY_MODEL_NAME)
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
 
@@ -103,8 +106,8 @@ class Herference:
         self.model.eval()
         with torch.no_grad():
             outputs = self.model(input_ids=input_ids,
-                                attention_mask=attention_mask,
-                                return_all_outputs=True)
+                                 attention_mask=attention_mask,
+                                 return_all_outputs=True)
 
         pred = Evaluator.get_prediction(
             batch,
@@ -120,7 +123,33 @@ class Herference:
         )
         aligned_text = align(api_text, data_point)
         if mention_heads:
-            add_heads(aligned_text, self.nlp) # @TODO: turn off for Spacy-based inference
+            # @TODO: turn off for Spacy-based inference
+            add_heads(aligned_text, self.nlp)
+
+        # aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
+        return aligned_text
+
+    def parse_prediction(self, prediction_path: Path, mention_heads: bool = True):
+        serialized_pred = api.SerializedPrediction(prediction_path)
+        text = serialized_pred.text
+
+        pred = Evaluator.get_prediction(
+            serialized_pred.get_batch(),
+            serialized_pred.get_outputs(),
+            tokenizer=self.tokenizer
+        ) # @TODO refactor this function to not use a for-loop?
+
+        api_text = api.Text(
+            text=text,
+            clusters=pred.clusters,
+            singletons=pred.singletons,
+            tokenized=pred.tokenized_text
+        )
+        aligned_text = align(api_text, text)
+
+        if mention_heads:
+            # @TODO: turn off for Spacy-based inference
+            add_heads(aligned_text, self.nlp)
 
         # aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
         return aligned_text

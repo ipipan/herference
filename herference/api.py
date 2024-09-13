@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 from typing import Tuple, List
+from pathlib import Path
+import json
 
+import torch
 from spacy.tokens import Span
 
 
@@ -26,7 +29,6 @@ class Mention:
             return f'{self.span}'
         else:
             return f'{self.text} <{self.indices[0]}, {self.indices[1]}>'
-        
 
     def __iter__(self):
         for el in self.indices:
@@ -78,7 +80,8 @@ class Text:
 
     def __repr__(self):
         return ''.join(
-            [f'\n\n --- Cluster {ind} --- \n' + cluster.__repr__() for ind, cluster in enumerate(self.clusters)]
+            [f'\n\n --- Cluster {ind} --- \n' + cluster.__repr__()
+             for ind, cluster in enumerate(self.clusters)]
         ).strip()
 
     def __getitem__(self, item):
@@ -89,3 +92,32 @@ class Text:
 
     def __iter__(self):
         return iter(self.clusters)
+
+
+class SerializedPrediction:
+    def __init__(self, p: Path):
+        with open(p) as f:
+            data = json.load(f)
+
+        self.text = data['text']
+        self.mention_start_ids = torch.Tensor(
+            data['herference']['mention_start_ids']).unsqueeze(0).int()
+        self.mention_end_ids = torch.Tensor(
+            data['herference']['mention_end_ids']).unsqueeze(0).int()
+        self.final_logits = torch.Tensor(
+            data['herference']['final_logits']).unsqueeze(0)
+        self.mention_logits = torch.Tensor(
+            data['herference']['mention_logits']).unsqueeze(0)
+        self.tokenized = torch.Tensor(
+            data['herference']['tokenized']).unsqueeze(0).int()
+
+    def get_outputs(self):
+        return (
+            self.mention_start_ids,
+            self.mention_end_ids,
+            self.final_logits,
+            self.mention_logits,
+        )
+
+    def get_batch(self):
+        return (self.tokenized, torch.Tensor(self.tokenized.shape), torch.Tensor(self.tokenized.shape), )
