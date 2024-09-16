@@ -70,7 +70,7 @@ class Herference:
         try:
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
         except IOError as e:
-            logger.info(f'Could not load Spacy model {
+            logger.info(f'Could not load Spacy model { \
                         self.cfg.SPACY_MODEL_NAME}')
             spacy.cli.download(self.cfg.SPACY_MODEL_NAME)
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
