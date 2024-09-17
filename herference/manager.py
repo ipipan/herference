@@ -128,14 +128,18 @@ class Herference:
         # aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
         return aligned_text
 
-    def parse_prediction(self, prediction_path: Path, mention_heads: bool = True):
+    @staticmethod
+    def parse_prediction(prediction_path: Path, mention_heads: bool = True, tokenizer = None):
         serialized_pred = api.SerializedPrediction(prediction_path)
         text = serialized_pred.text
+        
+        if tokenizer is None:
+            tokenizer = AutoTokenizer.from_pretrained('ipipan/herference-large')
 
         pred = Evaluator.get_prediction(
             serialized_pred.get_batch(),
             serialized_pred.get_outputs(),
-            tokenizer=self.tokenizer
+            tokenizer=tokenizer
         ) # @TODO refactor this function to not use a for-loop?
 
         api_text = api.Text(
@@ -146,9 +150,6 @@ class Herference:
         )
         aligned_text = align(api_text, text)
 
-        if mention_heads:
-            # @TODO: turn off for Spacy-based inference
-            add_heads(aligned_text, self.nlp)
 
         # aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
         return aligned_text

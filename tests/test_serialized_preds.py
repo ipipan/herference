@@ -5,11 +5,11 @@ import torch
 
 from herference import Herference, api
 
+serialized_result_path = 'tests/serialized_pred_example.json'
 
 class ManagerParsePrediction(unittest.TestCase):
     def test_parsed(self):
-        manager = Herference()
-        pred = manager.parse_prediction('tests/serialized_pred_example.json')
+        pred = Herference.parse_prediction(serialized_result_path)
         print(pred)
 
         self.assertEqual(len(pred.clusters), 1)
