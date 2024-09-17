@@ -4,14 +4,15 @@ import spacy
 from herference import *
 
 
-def init_spacy(model: str):
+def init_spacy(model: str, add_herference_to_pipeline=True):
     try:
         nlp = spacy.load(model)
     except IOError as e:
         spacy.cli.download(model)
         nlp = spacy.load(model)
     finally:
-        nlp.add_pipe("herference")
+        if add_herference_to_pipeline:
+            nlp.add_pipe("herference")
         return nlp
 
 

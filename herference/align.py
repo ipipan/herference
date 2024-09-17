@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 def intersect(span, text: list[str]):
     span_toks = {str(tok) for tok in span}
+    
+    if isinstance(text, str):
+        text = text.split(' ')
+    
     text_toks = {tok.strip('",:.?!') for tok in text}
 
     return any(text_toks.intersection(span_toks))
