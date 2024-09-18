@@ -23,6 +23,7 @@ from herference.evaluator import Evaluator
 from herference.model import S2E
 from herference.heads import add_heads
 from herference.filters import filtered_nested_mention_pairs_from_clusters
+from herference.parser import parse_serialized_pred
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +71,8 @@ class Herference:
         try:
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
         except IOError as e:
-            logger.info(f'Could not load Spacy model {self.cfg.SPACY_MODEL_NAME}')
+            logger.info(f'Could not load Spacy model {
+                        self.cfg.SPACY_MODEL_NAME}')
             spacy.cli.download(self.cfg.SPACY_MODEL_NAME)
             self.nlp = spacy.load(self.cfg.SPACY_MODEL_NAME)
 
@@ -109,8 +111,8 @@ class Herference:
                                  return_all_outputs=True)
 
         pred = Evaluator.get_prediction(
-            batch,
-            outputs,
+            [t.detach().cpu().numpy() for t in batch],
+            [t.detach().cpu().numpy() for t in outputs],
             tokenizer=self.tokenizer
         )
 
@@ -129,27 +131,5 @@ class Herference:
         return aligned_text
 
     @staticmethod
-    def parse_prediction(prediction_path: Path, mention_heads: bool = True, tokenizer = None):
-        serialized_pred = api.SerializedPrediction(prediction_path)
-        text = serialized_pred.text
-        
-        if tokenizer is None:
-            tokenizer = AutoTokenizer.from_pretrained('ipipan/herference-large')
-
-        pred = Evaluator.get_prediction(
-            serialized_pred.get_batch(),
-            serialized_pred.get_outputs(),
-            tokenizer=tokenizer
-        ) # @TODO refactor this function to not use a for-loop?
-
-        api_text = api.Text(
-            text=text,
-            clusters=pred.clusters,
-            singletons=pred.singletons,
-            tokenized=pred.tokenized_text
-        )
-        aligned_text = align(api_text, text)
-
-
-        # aligned_text.clusters = filtered_nested_mention_pairs_from_clusters(aligned_text)
-        return aligned_text
+    def parse_prediction(prediction_path: Path, tokenizer=None):
+        return parse_serialized_pred(prediction_path, tokenizer)

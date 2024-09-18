@@ -44,8 +44,10 @@ from torch.nn import Module, Linear, LayerNorm, Dropout
 from transformers import BertPreTrainedModel, AutoModel
 from transformers.activations import ACT2FN
 
-from herference.utils import extract_clusters, extract_mentions_to_predicted_clusters_from_clusters, mask_tensor, \
-    split_tokenized
+from herference.utils import extract_clusters, extract_mentions_to_predicted_clusters_from_clusters
+from herference.utils_torch import split_tokenized
+from herference.utils_torch import mask_tensor
+
 
 logger = logging.getLogger(__name__)
 

@@ -58,20 +58,23 @@ class Prediction:
 class Evaluator:
     @staticmethod
     def get_prediction(batch, outputs, tokenizer):
-        batch_np = tuple(tensor.detach().cpu().numpy() for tensor in batch)
-        outputs_np = tuple(tensor.detach().cpu().numpy() for tensor in outputs)
+        batch_np = tuple(tensor for tensor in batch)
+        outputs_np = tuple(tensor for tensor in outputs)
         for output in zip(*(batch_np + outputs_np)):
             starts, end_offsets, coref_logits, mention_logits = output[-4:]
 
             max_antecedents = np.argmax(coref_logits, axis=1).tolist()
             mention_to_antecedent = {
-                ((int(start), int(end)), (int(starts[max_antecedent]), int(end_offsets[max_antecedent])))
+                ((int(start), int(end)), (int(starts[max_antecedent]), int(
+                    end_offsets[max_antecedent])))
                 # map mention start_ind, end_ind to antecedent start_ind, end_ind
                 for start, end, max_antecedent in
                 zip(starts, end_offsets, max_antecedents) if max_antecedent < len(starts)}
 
-            predicted_clusters, _ = extract_clusters_for_decode(mention_to_antecedent)
-            mention_to_predicted_clusters = extract_mentions_to_predicted_clusters_from_clusters(predicted_clusters)
+            predicted_clusters, _ = extract_clusters_for_decode(
+                mention_to_antecedent)
+            mention_to_predicted_clusters = extract_mentions_to_predicted_clusters_from_clusters(
+                predicted_clusters)
             predicted_mentions = list(mention_to_predicted_clusters.keys())
 
             singletons = [
@@ -97,13 +100,15 @@ class Evaluator:
             mentions = detokenize(tokenizer, output[0], predicted_mentions)
             clusters = [
                 api.Cluster(detokenize(tokenizer, output[0], cluster)) for cluster in predicted_clusters
-                ]
-            singletons = [(detokenize(tokenizer, output[0], cluster[1]), cluster[2]) for cluster in singletons]
+            ]
+            singletons = [(detokenize(tokenizer, output[0],
+                           cluster[1]), cluster[2]) for cluster in singletons]
             for singleton in singletons:
                 singleton[0][0].logit = singleton[1]
             singletons = [singleton[0][0] for singleton in singletons]
 
-            tokenized_decoded = detokenize(tokenizer, output[0], [(i, i) for i in range(len(output[0]))])
+            tokenized_decoded = detokenize(
+                tokenizer, output[0], [(i, i) for i in range(len(output[0]))])
             return Prediction(
                 mentions,
                 clusters,

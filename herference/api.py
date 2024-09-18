@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from typing import Tuple, List
 from pathlib import Path
 import json
+import numpy as np
 
-import torch
 from spacy.tokens import Span
 
 
@@ -100,16 +100,26 @@ class SerializedPrediction:
             data = json.load(f)
 
         self.text = data['text']
-        self.mention_start_ids = torch.Tensor(
-            data['herference']['mention_start_ids']).unsqueeze(0).int()
-        self.mention_end_ids = torch.Tensor(
-            data['herference']['mention_end_ids']).unsqueeze(0).int()
-        self.final_logits = torch.Tensor(
-            data['herference']['final_logits']).unsqueeze(0)
-        self.mention_logits = torch.Tensor(
-            data['herference']['mention_logits']).unsqueeze(0)
-        self.tokenized = torch.Tensor(
-            data['herference']['tokenized']).unsqueeze(0).int()
+
+        self.mention_start_ids = np.array(
+            data['herference']['mention_start_ids'], dtype=int)
+        self.mention_start_ids = np.expand_dims(self.mention_start_ids, axis=0)
+
+        self.mention_end_ids = np.array(
+            data['herference']['mention_end_ids'], dtype=int)
+        self.mention_end_ids = np.expand_dims(self.mention_end_ids, axis=0)
+
+        self.final_logits = np.array(
+            data['herference']['final_logits'])
+        self.final_logits = np.expand_dims(self.final_logits, axis=0)
+
+        self.mention_logits = np.array(
+            data['herference']['mention_logits'])
+        self.mention_logits = np.expand_dims(self.mention_logits, axis=0)
+
+        self.tokenized = np.array(
+            data['herference']['tokenized'], dtype=int)
+        self.tokenized = np.expand_dims(self.tokenized, axis=0)
 
     def get_outputs(self):
         return (
@@ -120,4 +130,4 @@ class SerializedPrediction:
         )
 
     def get_batch(self):
-        return (self.tokenized, torch.Tensor(self.tokenized.shape), torch.Tensor(self.tokenized.shape), )
+        return (self.tokenized, np.zeros(self.tokenized.shape), np.zeros(self.tokenized.shape), )
